@@ -1,0 +1,564 @@
+<!doctype html>
+<html>
+<head>
+<title>3hg | dwm - doc</title>
+
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="Page du collectif 3hg">
+<meta name="copyright" content="This document copyright 2016-2024 by 3hg team.">
+<link rel="shortcut icon" HREF="https://3hg.fr/favicon.png" TYPE="image/png">
+<link rel="canonical" href="https://3hg.fr/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://3hg.fr/css/w3.css">
+<link rel="stylesheet" href="https://3hg.fr/css/w3-theme-black.css">
+<link rel="stylesheet" href="https://3hg.fr/css/fontawesome/css/fontawesome-all.min.css">
+
+</head>
+<body>
+<header class="w3-container w3-theme w3-padding">
+  <div class="w3-center">
+    <h1 class="w3-xxxlarge"><img src="logo_head.png" alt="doc" style="max-width:90%"/></h1>
+  </div>
+</header>
+<main>
+
+<div class="w3-container w3-padding-24"><div style="margin:auto; max-width:900px">
+    <h2 class="w3-center w3-margin-bottom">noDE -- <em>dwm</em> -- doc</h2>
+    <p class="w3-justify"><em>sources : <a href="https://si3t.ch/Logiciel-libre/Suckless/dwm-tour.xhtml">doc prx</a> &amp; <a href="https://arpinux.org/public/doc_arp_pdf/wms-dwm.pdf">doc arpinux</a>.</em></p>
+    <p class="w3-justify">
+        <strong>dwm</strong> est écrit en <strong>C</strong>... pas de rafraichissement automatique .. tu veux configurer ? alors tu dois compiler :)<br/>
+        <strong>dwm</strong> a su rester simple .. vierge je dirais: vierge de tout gadget et autre options qui alourdissent l'environnement et finissent par nuire aux performances de l'ordinateur et de l'utilisateur, alors que ce n'était pas l'idée de départ.<br/>
+        <strong>dwm</strong> est distribué par <a href="http://suckless.org/">suckless.org</a> <em>Dedicated to software that sucks less</em>… et adopte la philosopie KISS.<br/>
+        <strong>dwm</strong> est entièrement pilotable depuis le clavier mais sait aussi faire bon usage de votre souris (déplacement des clients, redimensionnement à la volée..).
+    </p>
+
+        <ul>
+            <li><a href="#prez">présentation</a></li>
+            <li><a href="#download">obtenir dwm</a></li>
+            <li><a href="#cfg">configuration</a></li>
+            <ul>
+                <li><a href="#configh">config.h</a></li>
+                <li><a href="#france">francisation</a></li>
+                <li><a href="#patch">patches</a></li>
+            </ul>
+            <li><a href="#install">installation</a></li>
+            <li><a href="#use">utilisation</a></li>
+            <li><a href="#custom">personalisation</a></li>
+        </ul>
+
+        <h2 id="prez">présentation</h2>
+        <p class="w3-justify">
+            <strong>DWM</strong> est un tiling window manager, c'est à dire qu'il affiche vos fenêtres (clients) afin qu'elles occupent la totalité de la surface du bureau (tags). les tags occupés sont indiqués par un petit carré dans la barre de tags. les clients sont séparés en deux zones: le <strong>Master</strong>(client principal) et le <strong>Stack</strong>(clients empilés), organisés de différentes façons (layouts) pour optimiser la visibilité de vos applications ouvertes. la version de base dispose de trois layouts: Tile (Master à gauche et Stack à droite), Monocle (clients maximisés) ou NULL (no layout = clients libres), mais de nombreux patchs existent pour ajouter des layouts.
+        </p>
+
+        <h2 id="download">obtenir dwm</h2>
+        <p class="w3-justify">
+            <strong>Note:</strong> si vous désirez utiliser directement dwm sans changements de configuration, vous pouvez installer la version proposée par Debian: passer à la section installation.<br>
+            pour récupérer dwm, plusieurs options s'offrent à vous.
+        </p>
+        <ul>
+            <li>depuis le <strong>site officiel</strong> : <a href="http://dwm.suckless.org">http://dwm.suckless.org</a></li>
+            <li>depuis les <strong>sources Debian</strong> : <code>apt-get source dwm</code></li>
+            <li>depuis le <strong>dépot git</strong> : <code>git clone http://git.suckless.org/dwm</code></li>
+        </ul>
+
+        <h2 id="cfg">configuration</h2>
+        <p class="w3-justify">
+            la configuration avant l'installation ? et oui!<br>
+            comme dwm s'installe sans fichier de configuration, tous les changements doivent s'effectuer avant la compilation. ces modifications peuvent intervenir de deux façons :
+        </p>
+        <ul>
+            <li>l'édition du fichier de configuration principal config.def.h et/ou</li>
+            <li>l'application de patches sur dwm.c et config.h.</li>
+        </ul>
+        <p class="w3-justify">
+            <strong>Note:</strong> si vous désirez utiliser directement dwm sans changements de configuration, vous pouvez installer la version proposée par votre distribution. passer à la section installation.
+        </p>
+
+        <h3 id="configh">config.h</h3>
+        <p class="w3-justify">
+            les modifications de base s'effectuent en copiant le fichier ./config.def.h en ./config.h et en l'éditant. je vous présente ici l'intégralité de ce fichier config.def.h commenté (notez que les raccourcis par défaut sont pour un clavier qwerty):
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>/* See LICENSE file for copyright and license details. */
+ 
+/* appearance */
+static const char font[]            = "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*"; /* sélectionner votre police avec xfontsel*/
+static const char normbordercolor[] = "#444444"; /* couleur du contour des clients */
+static const char normbgcolor[]     = "#222222"; /* couleur de fond clients-statusbar */
+static const char normfgcolor[]     = "#bbbbbb"; /* couleur du texte clients-statusbar */
+static const char selbordercolor[]  = "#005577"; /* couleur de la bordure du client au premier plan */
+static const char selbgcolor[]      = "#005577"; /* couleur du fond sélectionné clients-statusbar */
+static const char selfgcolor[]      = "#eeeeee"; /* couleur du texte clients-statusbar au premier plan */
+static const unsigned int borderpx  = 1;         /* taille de la bordure des clients en pixel(s) */
+static const unsigned int snap      = 32;        /* distance d'adhérence en pixel(s) pour les clients libres */
+static const Bool showbar           = True;      /* afficher la statusbar */
+static const Bool topbar            = True;      /* statusbar en haut de l'écran */
+ 
+/* tagging - nom et nombre de tags */
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+ 
+/* Les règles (rules) spécifiques. utiliser xprop pour obtenir les infos. */
+/* isfloating: True : client flottant, False : client en tiling */
+/* tags mask: tag le client: 1 &lt;&lt; 8 définit le tag 9, 1 &lt;&lt; 7 définit le tag 8, ~0 définit tous les tags. */
+/* sources: http://dwm.suckless.org/customisation/tagmask */
+static const Rule rules[] = {
+    /* xprop(1):
+     *  WM_CLASS(STRING) = instance, class
+     *  WM_NAME(STRING) = title
+     */
+    /* class      instance    title       tags mask     isfloating   monitor */
+    { "Gimp",     NULL,       NULL,       0,            True,        -1 }, /* gimp s'ouvrira libre */
+    { "Firefox",  NULL,       NULL,       1 &lt;&lt; 8,       False,       -1 }, /* firefox s'ouvrira 'tilé' sur le tag 9 */
+};
+ 
+/* layout(s) */
+static const float mfact      = 0.55; /* facteur de l'aire master [0.05..0.95] */
+static const int nmaster      = 1;    /* nombre de clients dans le master */
+static const Bool resizehints = True; /* respecte le redimensionnement automatique des applications */
+ 
+static const Layout layouts[] = {
+    /* symbol     arrange function */
+    { "[]=",      tile },    /* le première entrée sera le layout par défaut de dwm: ici, tiling */
+    { "&rt;&lt;&rt;",      NULL },    /* pas de layout = free layout */
+    { "[M]",      monocle }, /* monocle = clients maximisés */
+};
+ 
+/* key definitions */
+/* vous pouvez déféinir ici votre ou vos touches de modification. par défaut défini à Mod1Mask (Alt) */
+/* mais peut aussi être Mod4Mask (Super). vous pouvez également définir 2 modkey */
+/* ex: #define MODKEY2 Mod4Mask définit la touche super comme seconde touche de modification */
+#define MODKEY Mod1Mask
+#define TAGKEYS(KEY,TAG) \
+    { MODKEY,                       KEY,      view,           {.ui = 1 &lt;&lt; TAG} }, \
+    { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 &lt;&lt; TAG} }, \
+    { MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 &lt;&lt; TAG} }, \
+    { MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 &lt;&lt; TAG} },
+ 
+/* helper for spawning shell commands in the pre dwm-5.0 fashion */
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+ 
+/* commandes - raccourcis clavier */
+static const char *dmenucmd[] = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *termcmd[]  = { "uxterm", NULL };
+ 
+static Key keys[] = {
+    /* modifier                     key        function        argument */
+    { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+    { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+    { MODKEY,                       XK_b,      togglebar,      {0} },
+    { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+    { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+    { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
+    { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+    { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
+    { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+    { MODKEY,                       XK_Return, zoom,           {0} },
+    { MODKEY,                       XK_Tab,    view,           {0} },
+    { MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+    { MODKEY,                       XK_t,      setlayout,      {.v = &amp;layouts[0]} },
+    { MODKEY,                       XK_f,      setlayout,      {.v = &amp;layouts[1]} },
+    { MODKEY,                       XK_m,      setlayout,      {.v = &amp;layouts[2]} },
+    { MODKEY,                       XK_space,  setlayout,      {0} },
+    { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+    { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+    { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+    { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+    { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+    { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+    { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+    TAGKEYS(                        XK_1,                      0)
+    TAGKEYS(                        XK_2,                      1)
+    TAGKEYS(                        XK_3,                      2)
+    TAGKEYS(                        XK_4,                      3)
+    TAGKEYS(                        XK_5,                      4)
+    TAGKEYS(                        XK_6,                      5)
+    TAGKEYS(                        XK_7,                      6)
+    TAGKEYS(                        XK_8,                      7)
+    TAGKEYS(                        XK_9,                      8)
+    { MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+};
+ 
+/* réactions à la souris */
+/* click can be ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
+static Button buttons[] = {
+    /* click                event mask      button          function        argument */
+    { ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
+    { ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &amp;layouts[2]} },
+    { ClkWinTitle,          0,              Button2,        zoom,           {0} },
+    { ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+    { ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
+    { ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
+    { ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
+    { ClkTagBar,            0,              Button1,        view,           {0} },
+    { ClkTagBar,            0,              Button3,        toggleview,     {0} },
+    { ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
+    { ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+};</code></pre>
+
+        <h3 id="france">francisation</h3>
+        <p class="w3-justify">
+            les raccourcis clavier par défaut sont adaptés au clavier qwerty. pour adapter les raccourcis au clavier azerty, on modifie le fichier config.h:<br>
+            remplacer :
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>TAGKEYS(                        XK_1,                      0)
+TAGKEYS(                        XK_2,                      1)
+TAGKEYS(                        XK_3,                      2)
+TAGKEYS(                        XK_4,                      3)
+TAGKEYS(                        XK_5,                      4)
+TAGKEYS(                        XK_6,                      5)
+TAGKEYS(                        XK_7,                      6)
+TAGKEYS(                        XK_8,                      7)
+TAGKEYS(                        XK_9,                      8)</code></pre>
+        <p class="w3-justify">par</p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>TAGKEYS(                        XK_ampersand,                     0)
+TAGKEYS(                        XK_eacute,                        1)
+TAGKEYS(                        XK_quotedbl,                      2)
+TAGKEYS(                        XK_apostrophe,                    3)
+TAGKEYS(                        XK_parenleft,                     4)
+TAGKEYS(                        XK_minus,                         5)
+TAGKEYS(                        XK_egrave,                        6)
+TAGKEYS(                        XK_underscore,                    7)
+TAGKEYS(                        XK_ccedilla,                      8)</code></pre>
+        <p class="w3-justify">et remplacer :</p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },</code></pre>
+        <p class="w3-justify">par</p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>{ MODKEY,                       XK_agrave,      view,           {.ui = ~0 } },
+{ MODKEY|ShiftMask,             XK_agrave,      tag,            {.ui = ~0 } },</code></pre>
+
+        <h3 id="patch">patches</h3>
+        <p class="w3-justify">
+            les patches sont des modifications qui permettent d'ajouter des fonctionnalités à dwm. sur suckless.org, les patches sont réunis sur <a href="http://dwm.suckless.org/patches/">cette page</a>. libre à vous de les adapter à vos besoins.<br>
+            pour appliquer un patch :
+        </p>
+        <ul>
+            <li>utilisateur de git :<pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>cd dwm-directory
+git diff &gt; dwm-X.Y-yourpatchname.diff</code></pre></li>
+            <li>utilisateur de l'archive :<pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>cd dwm-directory
+patch -p1 &lt; path/to/patch.diff</code></pre></li>
+        </ul>
+
+        <h2 id="install">installation</h2>
+        <h3 id="paquet_officiel">paquet officiel</h3>
+        <p class="w3-justify">
+            pour les utilisateurs Debian et dérivées, si vous souhaitez utiliser la version de base de DWM sans configuration particulière, vous pouvez simplement utiliser la commande suivante qui installera dwm et quelques outils de chez suckless.org (dmenu, tabbed..):
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>apt-get install dwm suckless-tools</code></pre>
+        <p class="w3-justify">dwm s'installera dans /usr/bin.</p>
+
+        <h3 id="depuis_les_sources_git">depuis les sources git</h3>
+        <p class="w3-justify">si vous avez téléchargé les sources depuis les dépôts git, vous devez installer les dépendances :</p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>apt-get install libx11-dev libxinerama-dev</code></pre>
+        <p class="w3-justify">la procédure d'installation est classique: une fois les modifications et les patches appliqués, il vous suffit de vous placer dans le répertoire de dwm puis de lancer :</p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>make</code>
+<code>make install</code></pre>
+        <p class="w3-justify">dwm s'installera par défaut dans /usr/local/bin.</p>
+
+        <h3 id="depuis_les_sources_debian">depuis les sources Debian</h3>
+        <p class="w3-justify">
+            On récupère les sources ainsi :<br />
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>apt-get source dwm</code></pre><br />
+            On se déplace dans le dossier des sources. Avec le caractère “*”, on n'a pas besoin de préciser la version de dwm :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>cd dwm*</code></pre><br/>
+            <em>Attention</em>: Si vous voulez configurer dwm, éditez ici le config.def.h, pas le config.h (c'est la petite exception debian).<br>
+            Une fois satisfait, reconstruisez le paquet :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>dpkg-buildpackage -rfakeroot -uc -b</code></pre><br/>
+            Un paquet est alors disponible dans le répertoire parent, sour la forme dwm- version.deb. Pour vous assurer d'avoir les dépendances nécéssaires, il suffit de lancer :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>apt-get build-dep dwm</code></pre><br/>
+            Pour installer le paquet créé :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>dpkg -i dwm*.deb</code></pre><br/>
+            <strong>Note</strong>: Afin d'éviter toute mise à jour non souhaitée de dwm, écrivez ceci dans le fichier /etc/apt/preferences :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> Package: dwm
+Pin: release a=now
+Pin-Priority: 1001</pre>
+            Ou alors lancer :<br/>
+            <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>aptitude hold dwm</code></pre>
+
+        <h2 id="use">utilisation</h2>
+        <h3 id="lancement">lancement</h3>
+        <p class="w3-justify">
+            dwm se lance comme une session classique: soit par gdm ou tout autre gestionnaire de session graphique, soit par startx. voici mon ~/.xinitrc pour l'exemple d'un lancement en startx :
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>#!/bin/bash
+##############################
+# ~/.xinitrc by arpinux 2011 #
+##############################
+## D-Bus ##
+if which dbus-launch >/dev/null &amp;&amp; test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+        eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+## trackpad ## tapbutton off by default ##
+synclient VertTwoFingerScroll=1
+synclient HorizTwoFingerScroll=1
+synclient TapButton1=0
+## dualscreen ## edit if needed ##
+xrandr --output LVDS --mode 1024x768 --pos 0x0 --rotate normal --output VGA-0 --mode 1024x768 --pos 1024x0 --rotate normal
+## read ~.Xresources file
+xrdb -merge ~/.Xresources
+## set wallpaper / color the screen ##
+#xsetroot -solid grey20 &amp;
+feh --no-xinerama --bg-scale ~/.arp_setups/bg.png ## uncomment to display default wallpaper ##
+#nitrogen --restore &amp; ## uncomment to run your personnal wallpaper ##
+## launch terminal deamon ##
+urxvtd -q- -f -o
+## set session-killer
+setxkbmap -option terminate:ctrl_alt_bksp
+## launch session
+exec ck-launch-session /usr/local/bin/dwm</code></pre>
+
+        <h3 id="raccourcis_clavier">raccourcis clavier</h3>
+        <p class="w3-justify">
+            souvenez-vous que <strong>dwm s'organise autour de tags</strong>, l'equivalent des <em>bureaux virtuels</em>, mais avec plus de possibilités:<br>
+            on peut rendre un client visible sur tous les tags avec [Alt]+[Shift]+[0] (l'equivalent du “sticky” pour les bureaux virtuels), mais on peut aussi assigner 2 tags à un client, ce qui reviendrait à afficher une fenêtre sur 2 bureaux virtuels seulement.<br>
+            la fonction "exposé" est présente dans dwm... oO en effet, le raccourcis [Alt]+[0] affiche tous les clients sur le tag courant, il suffit d'afficher un autre tag pour rétablir l'afichage normal.<br>
+            voici quelques commandes de bases pour commencer à utiliser dwm. <strong>Attention</strong> si vous avez modifié les raccourcis clavier dans config.h, il faudra adapter. la touche de modification <em>Mod1</em> par défaut est [Alt].<br>
+            <strong>les raccourcis clavier</strong>
+        </p>
+        <table class="w3-table w3-striped w3-bordered" class="inline">
+            <thead>
+                <tr class="row0">
+                    <th class="col0 leftalign">modifier    </th>
+                    <th class="col1 leftalign">touche  </th>
+                    <th class="col2 leftalign">description  </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row1">
+                    <td class="col0 leftalign">Mod1+Shift  </td>
+                    <td class="col1 leftalign">return  </td>
+                    <td class="col2 leftalign">ouvre le terminal par défaut  </td>
+                </tr>
+                <tr class="row2">
+                    <td class="col0 leftalign" rowspan="2">Mod1        </td>
+                    <td class="col1 leftalign">,       </td>
+                    <td class="col2 leftalign">va à l'écran précédent  </td>
+                </tr>
+                <tr class="row3">
+                    <td class="col0 leftalign">.       </td>
+                    <td class="col1 leftalign">va à l'écran suivant  </td>
+                </tr>
+                <tr class="row4">
+                    <td class="col0 leftalign" rowspan="2">Mod1+Shift  </td>
+                    <td class="col1 leftalign">,       </td>
+                    <td class="col2 leftalign">deplace le client vres l'écran précédent  </td>
+                </tr>
+                <tr class="row5">
+                    <td class="col0 leftalign">.       </td>
+                    <td class="col1 leftalign">deplace le client vres l'écran suivant  </td>
+                </tr>
+                <tr class="row6">
+                    <td class="col0 leftalign" rowspan="10">Mod1        </td>
+                    <td class="col1 leftalign">b       </td>
+                    <td class="col2 leftalign">affiche/masque la barre d'info  </td>
+                </tr>
+                <tr class="row7">
+                    <td class="col0 leftalign">t       </td>
+                    <td class="col1 leftalign">definir le layout en “tile” (mosaïque)  </td>
+                </tr>
+                <tr class="row8">
+                    <td class="col0 leftalign">f       </td>
+                    <td class="col1 leftalign">definir le layout en “floating” (libre)  </td>
+                </tr>
+                <tr class="row9">
+                    <td class="col0 leftalign">m       </td>
+                    <td class="col1 leftalign">definir le layout en “monocle” (maximisé)  </td>
+                </tr>
+                <tr class="row10">
+                    <td class="col0 leftalign">space   </td>
+                    <td class="col1 leftalign">échanger entre le layout actuel et le précédent  </td>
+                </tr>
+                <tr class="row11">
+                    <td class="col0 leftalign">j       </td>
+                    <td class="col1 leftalign">donne le focus au client suivant  </td>
+                </tr>
+                <tr class="row12">
+                    <td class="col0 leftalign">k       </td>
+                    <td class="col1 leftalign">donne le focus au client précédent  </td>
+                </tr>
+                <tr class="row13">
+                    <td class="col0 leftalign">h       </td>
+                    <td class="col1 leftalign">agrandi la taille du master  </td>
+                </tr>
+                <tr class="row14">
+                    <td class="col0 leftalign">l       </td>
+                    <td class="col1 leftalign">diminue la taille du master  </td>
+                </tr>
+                <tr class="row15">
+                    <td class="col0 leftalign">return  </td>
+                    <td class="col1 leftalign">échange le client ayant le focus avec celui dans le master  </td>
+                </tr>
+                <tr class="row16">
+                    <td class="col0 leftalign" rowspan="3">Mod1+Shift  </td>
+                    <td class="col1 leftalign">c       </td>
+                    <td class="col2 leftalign">fermer le client ayant le focus  </td>
+                </tr>
+                <tr class="row17">
+                    <td class="col0 leftalign">space   </td>
+                    <td class="col1 leftalign">libérer/“tiler” le client ayant le focus  </td>
+                </tr>
+                <tr class="row18">
+                    <td class="col0 leftalign">0       </td>
+                    <td class="col1 leftalign">mettre le client qui a le focus sur tous les tags  </td>
+                </tr>
+                <tr class="row19">
+                    <td class="col0 leftalign" rowspan="2">Mod1        </td>
+                    <td class="col1 leftalign">1,2..n  </td>
+                    <td class="col2 leftalign">afficher les clients du tag n  </td>
+                </tr>
+                <tr class="row20">
+                    <td class="col0 leftalign">0       </td>
+                    <td class="col1 leftalign">afficher les clients de tous les tags (fonction “exposé”)  </td>
+                </tr>
+                <tr class="row21">
+                    <td class="col0 leftalign">Mod1+Shift  </td>
+                    <td class="col1 leftalign">q       </td>
+                    <td class="col2 leftalign">quitter dwm  </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="w3-justify">
+            <strong>le comportement de la souris sur les clients</strong><br>
+            <em>rappel: b1=clic gauche, b2=clic central, b3=clic droit</em>
+        </p>
+        <table class="w3-table w3-striped w3-bordered" class="inline">
+            <thead>
+                <tr class="row0">
+                    <th class="col0 leftalign">modifier  </th>
+                    <th class="col1 leftalign">bouton  </th>
+                    <th class="col2 leftalign">description  </th>
+                </tr>
+            </thead>
+            <tbody><tr class="row1">
+                    <td class="col0 leftalign" rowspan="3">Mod1  </td>
+                    <td class="col1 leftalign">bouton1  </td>
+                    <td class="col2 leftalign">déplacer la fenêtre au glissé, fait passer la fenêtre en mode “libre”  </td>
+                </tr>
+                <tr class="row2">
+                    <td class="col0 leftalign">bouton2  </td>
+                    <td class="col1 leftalign">libérer/“tiler” le client  </td>
+                </tr>
+                <tr class="row3">
+                    <td class="col0 leftalign">bouton3  </td>
+                    <td class="col1 leftalign">redimensionne le client depuis le coin inférieur droit, fait passer la fenêtre en mode “libre”  </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="w3-justify">
+            <strong>le comportement de la souris sur les tags</strong>
+        </p>
+        <table class="w3-table w3-striped w3-bordered" class="inline">
+            <thead>
+                <tr class="row0">
+                    <th class="col0 leftalign">modifier  </th>
+                    <th class="col1 leftalign">bouton  </th>
+                    <th class="col2 leftalign">description  </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row1">
+                    <td class="col0 leftalign" rowspan="2">      </td>
+                    <td class="col1 leftalign">bouton1  </td>
+                    <td class="col2 leftalign">affiche les clients du tag sélectionné (va au tag sélectionné)  </td>
+                </tr>
+                <tr class="row2">
+                    <td class="col0 leftalign">bouton3  </td>
+                    <td class="col1 leftalign">affiche/masque les clients du tag sélectionné sur le tag courant  </td>
+                </tr>
+                <tr class="row3">
+                    <td class="col0 leftalign" rowspan="2">Mod1  </td>
+                    <td class="col1 leftalign">bouton1  </td>
+                    <td class="col2 leftalign">applique le tag sélectionné au client qui a le focus (deplace le client vers le tag sélectionné)  </td>
+                </tr>
+                <tr class="row4">
+                    <td class="col0 leftalign">bouton3  </td>
+                    <td class="col1 leftalign">ajoute/enlève le tag sélectionné au client qui a le focus  </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="w3-justify">
+            <strong>le comportement sur le bouton de layout</strong>
+        </p>
+        <table class="w3-table w3-striped w3-bordered" class="inline">
+            <thead>
+                <tr class="row0">
+                    <th class="col0 leftalign">bouton  </th>
+                    <th class="col1 leftalign">description  </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="row1">
+                    <td class="col0 leftalign">bouton1  </td>
+                    <td class="col1 leftalign">permute les layouts entre “tile”(mosaïque) et “floating”(libre)  </td>
+                </tr>
+                <tr class="row2">
+                    <td class="col0 leftalign">bouton3  </td>
+                    <td class="col1 leftalign">sélectionner le tag “floating” (libre)  </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="custom">personnalisation</h2>
+        <h3 id="conky_dans_la_statusbar">conky dans la statusbar</h3>
+        <p class="w3-justify">
+            la statusbar de dwm indique les tags, le layout et la version de dwm utilisée. mais on peut lui faire afficher beaucoup plus. pour cela, plusieurs possibilités: conky, dzen2, un script bash, un executable en C...<br>
+            pour tester, lancer dans une console :
+        </p>
+        <code>xsetroot -name "`date`"</code>
+        <p class="w3-justify">
+            Dans le cas de conky, il ne s'affiche pas réellement: il s'éxécute et est "lu" par la statusbar. Pour cela , vous aurez besoin d'un conkyrc particulier car il indiquera à conky de ne rien afficher !! … En fait, les informations seront envoyé vers STDOUT et récupérés par dwm. Voici comment procéder :
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> ##############################################
+#  Settings
+##############################################
+background no
+out_to_console yes
+out_to_x no
+update_interval 1.0
+total_run_times 0
+uppercase no
+short_units yes
+use_spacer none
+if_up_strictness address
+##############################################
+#  Output
+##############################################
+TEXT
+¦${cpu}%-${acpitemp}°\
+¦${memperc}%-$mem\
+¦${fs_used_perc /}%-${diskio}/s-${ibm_temps 2}°\
+¦${if_match "$ibm_volume" == "mute" }M${else}${ibm_volume}/14${endif}\
+¦${time %d/%m %I:%M}¦</pre>
+
+        <p class="w3-justify">
+            Vous constatez que les fonctions sont réduites lorsque conky ne s'affiche pas dans X. De plus, les informatons étant supposées s'afficher dans une barre de statut, conky doit tenir sur une ligne.<br/>
+            Il se lance depuis le ~/.xinitrc, juste avant le lancement de la session dwm :
+        </p>
+        <pre class="w3-panel w3-leftbar w3-border-blue-grey"> <code>## set statusbar ##
+conky | while true; read line; do xsetroot -name "$line"; done &amp;</code></pre>
+        <p class="w3-justify">différents patches permettent de colorer la statusbar, de la rendre cliquable etc</p>
+
+        <h2 id="conclusion">conclusion</h2>
+        <p class="w3-justify">
+            DWM est un de mes gestionnaires de fenêtres préférés ! c'est aussi le gestionnaire de fenêtres par défaut du livarp.<br/>
+            depuis que j'ai commencé à l'utiliser/le modifier, il n'a planté qu'une fois. dwm est léger, efficace, gère les écrans multiples, est simple à configurer.<br/>
+            dwm conviendra parfaitement aux pro soucieux d'optimiser leur espace de travail comme aux g33ks voulant mettre les doigts dans la console ;) .
+        </p>
+</div></div>
+
+</main>
+
+<footer class="w3-container w3-theme w3-padding">
+
+  <div class="w3-center"><a href="LICENCE" alt="Licence MIT">MIT</a> &copy; 2016-2024 <a href="https://3hg.fr">Collectif 3hg</a><br>
+  Merci à <a href="https://lesptitsdessinsdepeha.wordpress.com/" alt="Site de Péhä">Péhä</a> pour ses nombreuses illustrations<br>
+  <a href="https://3hg.fr" title="Collectif 3hg"><img src="https://3hg.fr/bouton3hg.gif" alt="bouton 3hg" /></a><br>
+  <a href="../" class="w3-bar-item w3-button">Page précédente</a></div>
+  <!-- Cette adresse mail est rien que pour les spams : 
+      notreal@3hg.fr
+  -->
+
+</footer>
+
+</body>
+</html>

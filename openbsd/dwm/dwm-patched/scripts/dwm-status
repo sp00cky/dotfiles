@@ -1,0 +1,176 @@
+#!/bin/sh
+# Status script for dwm-patched
+
+# arpinux & thuban @2015
+
+# to use with ansistatuscolor patch
+# http://dwm.suckless.org/patches/ansistatuscolors
+
+# colors ###############################################################
+red='\e[0;31m'
+blue='\e[0;34m'
+cyan='\e[0;36m'
+purple='\e[0;35m'
+green='\e[0;32m'
+yellow='\e[0;33m'
+white='\e[0;37m'
+# text bright colors
+bdark='\e[1;30m'
+bred='\e[1;31m'
+bgreen='\e[1;32m'
+byellow='\e[1;33m'
+bblue='\e[1;34m'
+bpurple='\e[1;35m'
+bcyan='\e[1;36m'
+bwhite='\e[1;37m'
+# background colors
+WC='\e[0;47m'
+RED='\e[0;41m'
+BLUE='\e[0;44m'
+CYAN='\e[0;46m'
+GREEN='\e[0;42m'
+YELLOW='\e[0;43m'
+# reset text color
+NC='\e[0m'
+
+# functions ############################################################
+
+cleanup(){
+	if [ "$(pidof dwm-conky)" ]; then killall dwm-conky; fi
+	if [ "$(pidof conkyd)" ]; then killall conkyd; fi
+}
+
+lda() {	/bin/echo -e "$white $(awk '{print $1,$2,$3}' </proc/loadavg)$NC"; }
+cpu(){
+	# calcul de la charge
+	read cpu a b c previdle rest < /proc/stat 
+	prevtotal=$((a+b+c+previdle))
+	sleep 0.5 
+	read cpu a b c idle rest < /proc/stat 
+	total=$((a+b+c+idle))
+	cpu="$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal)))"
+	# sortie en 4 couleurs : none/green/yellow/red pour 0-10-40-70%
+	if [ "$cpu" -gt "70" ]; then
+		/bin/echo -e "$bred$cpu$NC%"
+	elif [ "$cpu" -gt "40" -a "$cpu" -lt "70" ]; then
+		/bin/echo -e "$byellow$cpu$NC%"
+	elif [ "$cpu" -gt "10" -a "$cpu" -lt "40" ]; then
+		/bin/echo -e "$bgreen$cpu$NC%"
+	else
+		/bin/echo -e "$cpu%"
+	fi
+}
+cputemp(){
+	# affiche en rouge si +60°C
+	tempcpu="$(acpi -t | awk '{print $4}' | cut -c 1-2)"
+	if [ "$tempcpu" -gt "60" -o "$tempcpu" -eq "10" ]; then
+		/bin/echo -e "$bred$tempcpu${NC}C"
+	else
+		/bin/echo -e "$white$tempcpu${NC}C"
+	fi
+}
+
+mmuse(){
+	mused="$(free -m | grep buffers/cache | awk '{print $3}')"
+	mfree="$(free -m | grep buffers/cache | awk '{print $4}')"
+	if [ "$mused" -gt "2500" ]; then
+		/bin/echo -e "$bred$mused used$NC - $white$mfree free$NC"
+	elif [ "$mused" -gt "1000" -a "$mused" -lt "2500" ]; then
+		/bin/echo -e "$byellow$mused$NC used - $white$mfree$NC free"
+	else
+		/bin/echo -e "$white$mused$NC used - $mfree free"
+	fi
+}
+
+dduse(){
+	ddused="$(df -h | grep sda1 | awk '{print $5}' | cut -c 1-2)"
+	ddfree="$(df -h | grep sda1 | awk '{print $4}')"
+	if [ "$ddused" -gt "85" ]; then
+		/bin/echo -e "$bred${ddused}% used$NC - $white$ddfree free$NC"
+	elif [ "$ddused" -gt "70" -a "$ddused" -lt "85" ]; then
+		/bin/echo -e "$byellow$ddused${NC}% used - $white$ddfree$NC free"
+	else
+		/bin/echo -e "$white$ddused${NC}% used - $ddfree free"
+	fi
+}
+
+bat(){
+	# affichage rouge si offline et -30% de charge
+	onl="$(acpi -V | grep "on-line")"
+    acpib="$(acpi -b)"
+	charge="$(/bin/echo $acpib | awk '{print +$4}')"
+	remain="$(/bin/echo $acpib | awk '{print $5}')"
+	if [ -z "$onl" -a $charge -gt 30 ]; then 
+		/bin/echo -e "$white$charge%$NC $remain"
+	elif [ -z "$onl" -a $charge -le 30 ]; then
+		/bin/echo -e "$bred$charge% $remain$NC"
+	else
+		/bin/echo -e "$white$charge$NC%"
+	fi
+}
+
+sshd() { if [ "$(pidof sshd)" ]; then /bin/echo -e "[$yellow ssh$NC ] "; fi }
+tor() { if [ "$(pidof tor)" ]; then /bin/echo -e "[$green tor$NC ] "; fi }
+f2b() { if [ -e /var/run/fail2ban/fail2ban.pid ]; then /bin/echo -e "[$red f2b$NC ] "; fi }
+dte(){
+	dte1="$(date "+%a %d %b")"
+	dte2="$(date "+%I:%M %p")"
+	/bin/echo -e "$dte1$white  $dte2$NC"
+}
+
+# notif & show : afficher un texte déroulant dans la barre de status
+# by thuban <http://yeuxdelibad.net>
+notif() {
+    FIFO=/tmp/dwmbuf
+    if [ -e $FIFO ]; then
+        while read line; do
+            show "$line"
+        done < $FIFO
+        echo -n "" > /tmp/dwmbuf
+    fi
+}
+
+
+show() {
+# lenght of the "window"
+l=100 
+#speed. The lesser the faster
+speed=0.1
+# $1 is e line to show
+    i=1
+    j=1
+    len=$(echo $1 |wc -c)
+    while [ $i -le $(($l+$len)) ]; do
+        if [ $i -lt $len ]; then
+            w="$(echo -n $1 | cut -c 1-$i)"
+            spaces="$(printf '%*s' "$(($l-$(($(echo $w | wc -c)))))" | tr ' ' ' ')"
+            xsetroot -name "$spaces$w"
+        elif [ $i -gt $len -a $i -lt $l ]; then
+            before="$(printf '%*s' "$(($l-$i))" | tr ' ' ' ')"
+            after="$(printf '%*s' "$(($i-$len))" | tr ' ' ' ')"
+            xsetroot -name "$before$w$after"
+        elif [ $i -ge $l ]; then
+            w="$(echo -n $1 | cut -c $j-$i)"
+            spaces="$(printf '%*s' "$(($l-$(($(echo $w | wc -c)))))" | tr ' ' ' ')"
+            xsetroot -name "$w$spaces"
+            j=$((j+1))
+        fi
+        i=$((i+1))
+        sleep $speed
+    done
+}
+
+# Pipe to status bar in dwm, else print to term ########################
+cleanup
+if [ "$(pidof dwm)" ]; then
+	while true
+		do
+			notif
+            xsetroot -name "[ $(lda)  $(cpu) $(cputemp) ] [ $(mmuse) ] [ $(dduse) ] [ $(bat) ] $(tor)$(sshd)$(f2b)[ $(dte) ]             "
+			sleep 1
+		done
+else
+	/bin/echo -e "dwm is not running, printing status here"
+	/bin/echo -e "[ $(lda)  $(cpu) $(cputemp) ] [ $(mmuse) ] [ $(dduse) ] [ $(bat) ] $(tor)$(sshd)$(f2b)[ $(dte) ]"
+fi
+exit 0

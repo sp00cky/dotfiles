@@ -1,0 +1,7 @@
+#!/bin/bash
+# Status conky launcher for dwm
+killall dwm-status
+killall conkyd
+/usr/bin/conkyd -q -c ~/.dwm_conkyrc | while true; read line; do xsetroot -name "$line"; done &
+
+exit 0

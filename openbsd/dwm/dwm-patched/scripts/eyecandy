@@ -1,0 +1,44 @@
+#!/bin/bash
+# xcompmgr level selector
+
+# set levels -----------------------
+3dlight() { xcompmgr -ncC ; }
+3dfull() { xcompmgr -cfF -t-7 -l-7 -r7 -o.95 ; }
+
+#-----------------------------------
+
+if [ "$1" == "-s" ]; then
+    pkill -9 xcompmgr
+elif [ "$1" == "-l" ]; then
+    pkill -9 xcompmgr
+    sleep 1s
+    $(3dlight) &
+elif [ "$1" == "-f" ]; then
+    pkill -9 xcompmgr
+    sleep 1s
+    $(3dfull) &
+else
+    ACTION=$(zenity --width=90 --height=155 --list \
+        --text="Select a composite mode" \
+        --title="eyecandy" \
+        --column "composite level" \
+        "stop" "light" "full")
+    if [ -n "${ACTION}" ]; then
+        case $ACTION in
+            light)
+                pkill -9 xcompmgr
+                sleep 1s
+                $(3dlight) &
+                ;;
+            full)
+                pkill -9 xcompmgr
+                sleep 1s
+                $(3dfull) &
+                ;;
+            stop)
+                pkill -9 xcompmgr
+                ;;
+        esac
+    fi
+fi
+exit 0

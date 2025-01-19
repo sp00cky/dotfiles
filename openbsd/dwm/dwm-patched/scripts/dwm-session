@@ -1,0 +1,22 @@
+#!/bin/sh
+#xfce4-power-manager &
+gpg-agent &
+eyecandy -l &
+xscreensaver -no-splash &
+#nm-applet &
+#wicd-gtk -t &
+volumeicon &
+clipit &
+#radiotray &
+sleep 5 && icedove &
+sleep 2 && iceweasel &
+sleep 10 && udisks-glue --session &
+#if [ $(ls ~/downloads/parts/ | wc -l) != 0 ];then
+    sleep 5 && transmission-gtk &
+#fi
+## launch dwm in a loop with a log file
+#dwm-status &
+dwm-conky &
+while true; do
+    /usr/local/bin/dwm 2> ~/.dwm.log
+done
